@@ -6,12 +6,14 @@ from review.serializers import ReviewSerializer
 
 
 class ReviewList(ListCreateAPIView):
-    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthenticated, )
 
     def perform_create(self, serializer):
         serializer.save(reviewer=self.request.user)
+
+    def get_queryset(self):
+        return Review.objects.filter(reviewer=self.request.user)
 
 
 class ReviewDetail(RetrieveUpdateDestroyAPIView):

@@ -18,10 +18,14 @@ class ReviewTestCase(TestCase):
         cls.user = User.objects.create(username="test")
         cls.token = Token.objects.create(user=cls.user)
 
+        u2 = User.objects.create(username="test2")
+        Review.objects.create(title="a", summary="b", rating=1, company_name="c", reviewer=u2)
+
     @classmethod
     def tearDownClass(cls):
-        cls.user.delete()
-        cls.token.delete()
+        User.objects.all().delete()
+        Token.objects.all().delete()
+        Review.objects.all().delete()
 
     def _post(self, data):
         c = APIClient()
@@ -47,20 +51,21 @@ class ReviewTestCase(TestCase):
     def test_valid_create_and_list(self):
         c = APIClient()
         c.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        object_count = Review.objects.count()
+        all_object_count = Review.objects.count()
+        self_object_count = Review.objects.filter(reviewer=self.user).count()
 
         r = c.post("/api/v1/reviews/", self.REVIEW_PAYLOAD)
         self.assertEqual(r.status_code, 201)
 
-        review = Review.objects.get()
-        self.assertEqual(Review.objects.count(), object_count + 1)
+        review = Review.objects.latest("created_at")
+        self.assertEqual(Review.objects.count(), all_object_count + 1)
         self.assertEqual(review.summary, "ok")
         self.assertEqual(review.reviewer, self.user)
         self.assertAlmostEqual(review.created_at, timezone.now(), delta=td(seconds=2))
 
         r = c.get("/api/v1/reviews/")
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(len(r.json()), object_count + 1)
+        self.assertEqual(len(r.json()), self_object_count + 1)
 
     def test_not_authenticated_create(self):
         c = APIClient()
