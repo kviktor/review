@@ -8,6 +8,8 @@ from review.models import Review
 
 
 class ReviewTestCase(TestCase):
+    REVIEW_PAYLOAD = {'rating': 5, 'title': "test", 'summary': "ok", 'company_name': "szia"}
+
     @classmethod
     def setUpClass(cls):
         cls.user = User.objects.create(username="test")
@@ -22,9 +24,15 @@ class ReviewTestCase(TestCase):
         c = APIClient()
         c.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
 
-        req = {'rating': 5, 'title': "test", 'summary': "ok", 'company_name': "szia", 'reviewer': 1}
-        r = c.post("/api/v1/reviews/", req)
+        r = c.post("/api/v1/reviews/", self.REVIEW_PAYLOAD)
 
         self.assertEqual(r.status_code, 201)
+        review = Review.objects.get()
         self.assertEqual(Review.objects.count(), 1)
-        self.assertEqual(Review.objects.get().summary, "ok")
+        self.assertEqual(review.summary, "ok")
+        self.assertEqual(review.reviewer, self.user)
+
+    def test_not_authenticated_create(self):
+        c = APIClient()
+        r = c.post("/api/v1/reviews/", self.REVIEW_PAYLOAD)
+        self.assertEqual(r.status_code, 401)
