@@ -3,7 +3,6 @@ from django.db.models import (
 )
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.conf import settings
 
 
 class Review(Model):
@@ -14,3 +13,9 @@ class Review(Model):
     summary = TextField(max_length=10000)
     ip_address = GenericIPAddressField(blank=True, null=True)
     created_at = DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ("-created_at", )
+
+    def __str__(self):
+        return f"{self.rating} - {self.title} - {self.company_name} - {self.reviewer.username}"
