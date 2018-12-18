@@ -19,7 +19,7 @@ urlpatterns = [
 urlpatterns = format_suffix_patterns(urlpatterns)
 
 
-if settings.DEBUG and "debug_toolbar" in settings.INSTALLED_APPS:
+if settings.DEBUG and "debug_toolbar" in settings.INSTALLED_APPS:  # pragma: no cover
     import debug_toolbar
 
     urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
