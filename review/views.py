@@ -1,8 +1,9 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from review.models import Review
 from review.serializers import ReviewSerializer
+from review.permissions import IsReviewer
 
 
 class ReviewList(ListCreateAPIView):
@@ -16,6 +17,7 @@ class ReviewList(ListCreateAPIView):
         return Review.objects.filter(reviewer=self.request.user)
 
 
-class ReviewDetail(RetrieveUpdateDestroyAPIView):
+class ReviewDetail(RetrieveAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = (IsAuthenticated, IsReviewer)
