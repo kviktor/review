@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from review.models import Review
 from review.serializers import ReviewSerializer
 from review.permissions import IsReviewer
+from review.utils import get_ip_address_from_request
 
 
 class ReviewList(ListCreateAPIView):
@@ -11,7 +12,8 @@ class ReviewList(ListCreateAPIView):
     permission_classes = (IsAuthenticated, )
 
     def perform_create(self, serializer):
-        serializer.save(reviewer=self.request.user)
+        ip_address = get_ip_address_from_request(self.request)
+        serializer.save(reviewer=self.request.user, ip_address=ip_address)
 
     def get_queryset(self):
         return Review.objects.filter(reviewer=self.request.user)

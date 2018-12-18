@@ -73,6 +73,7 @@ class ReviewTestCase(TestCase):
         self.assertEqual(Review.objects.count(), all_object_count + 1)
         self.assertEqual(review.summary, "ok")
         self.assertEqual(review.reviewer, self.user)
+        self.assertEqual(review.ip_address, "127.0.0.1")
         self.assertAlmostEqual(review.created_at, timezone.now(), delta=td(seconds=2))
 
         review_id = r.json()['id']
