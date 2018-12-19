@@ -35,7 +35,7 @@ class ReviewTestCase(TestCase):
         return client
 
     def _post(self, url, data, authenticate=True):
-        return self._create_client(authenticate).post(url, data)
+        return self._create_client(authenticate).post(url, data, format="json")
 
     def _put(self, url, data, authenticate=True):
         return self._create_client(authenticate).put(url, data)

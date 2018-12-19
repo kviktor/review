@@ -9,7 +9,6 @@ from review import views
 
 
 urlpatterns = [
-    # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     path("api/v1/reviews/", views.ReviewList.as_view()),
     path("api/v1/reviews/<int:pk>/", views.ReviewDetail.as_view()),
