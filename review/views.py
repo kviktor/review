@@ -8,6 +8,14 @@ from review.utils import get_ip_address_from_request
 
 
 class ReviewList(ListCreateAPIView):
+    """
+    get:
+    List all reviews submitted by the user.
+
+    post:
+    Create a new review.
+    """
+
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthenticated, )
 
@@ -20,6 +28,10 @@ class ReviewList(ListCreateAPIView):
 
 
 class ReviewDetail(RetrieveAPIView):
+    """
+    Retrieve a single review
+    """
+
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthenticated, IsReviewer)
