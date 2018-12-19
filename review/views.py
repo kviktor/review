@@ -24,7 +24,7 @@ class ReviewList(ListCreateAPIView):
         serializer.save(reviewer=self.request.user, ip_address=ip_address)
 
     def get_queryset(self):
-        return Review.objects.filter(reviewer=self.request.user)
+        return Review.objects.filter(reviewer=self.request.user).select_related("reviewer")
 
 
 class ReviewDetail(RetrieveAPIView):
@@ -32,6 +32,6 @@ class ReviewDetail(RetrieveAPIView):
     Retrieve a single review
     """
 
-    queryset = Review.objects.all()
+    queryset = Review.objects.select_related("reviewer")
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthenticated, IsReviewer)
