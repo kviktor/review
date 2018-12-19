@@ -91,6 +91,7 @@ class ReviewTestCase(TestCase):
         self.assertEqual(review.summary, data['summary'])
         self.assertEqual(review.rating, data['rating'])
         self.assertEqual(review.title, data['title'])
+        self.assertEqual(review.reviewer.username, data['reviewer'])
 
         response = self._get("/api/v1/reviews/")
         self.assertEqual(response.status_code, 200)
@@ -149,3 +150,10 @@ class ReviewTestCase(TestCase):
         resp = self._get(f"/api/v1/reviews/")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(len(resp.json()), 0)
+
+    def test_review_model_str(self):
+        review = Review.objects.latest("created_at")
+        self.assertEqual(
+            str(review),
+            f"{review.rating} - {review.title} - {review.company_name} - {review.reviewer.username}"
+        )
