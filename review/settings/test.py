@@ -23,6 +23,9 @@ DATABASES = {
 }
 
 
+TEMPLATES[0]['OPTIONS']['debug'] = True  # for coverage
+
+
 # CACHES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#caches
