@@ -142,7 +142,7 @@ class ReviewTestCase(TestCase):
         self.assertEqual(r.status_code, 404)
 
     def test_not_authorized_retrieve(self):
-        review = Review.objects.latest("created_at")
+        review = Review.objects.exclude(reviewer=self.user).latest("created_at")
         r = self._get(f"/api/v1/reviews/{review.id}/")
         self.assertEqual(r.status_code, 403)
 
